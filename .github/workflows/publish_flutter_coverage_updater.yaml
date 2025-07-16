@@ -1,0 +1,15 @@
+name: publish_flutter_coverage_updater
+
+on:
+  push:
+    tags:
+      - "flutter_coverage_updater-v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/mason_publish.yml@v1
+    with:
+      working_directory: "flutter_coverage_updater"
+    secrets:
+      mason_credentials: secrets.MASON_CREDENTIALS
