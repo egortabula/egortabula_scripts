@@ -24,6 +24,7 @@ if [ ! -d "test" ]; then
 else
     flutter test --coverage
     
+    {{#generate_html_report}}
     echo "📊 Generating HTML coverage report..."
     # Check if genhtml is installed
     if ! command -v genhtml &> /dev/null; then
@@ -82,6 +83,7 @@ else
     fi
 
     genhtml coverage/lcov.info -o coverage/html
+    {{/generate_html_report}}
 
     echo "📈 Extracting coverage percentage..."
     COVERAGE=$(lcov --summary coverage/lcov.info | grep "lines" | grep -o '[0-9]\+\.[0-9]\+%' | head -1)
@@ -139,10 +141,15 @@ else
 fi
 
 echo "✅ Coverage report generated successfully!"
+{{#generate_html_report}}
 if [ -d "coverage/html" ]; then
     echo "📂 HTML report: coverage/html/index.html"
 else
     echo "📂 HTML report: skipped (no tests found)"
 fi
+{{/generate_html_report}}
+{{^generate_html_report}}
+echo "📂 HTML report: skipped (disabled)"
+{{/generate_html_report}}
 echo "🏷️ Badge created/updated: coverage_badge.svg"
 echo "📊 Overall coverage: $COVERAGE"

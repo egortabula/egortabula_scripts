@@ -25,9 +25,9 @@ environment:
 #  * an optional prompt phrase used when asking for the variable
 #  * a list of values (enums only)
 #  * an optional separator (list only)
-# vars:
-#   name:
-#     type: string
-#     description: Your name
-#     default: Dash
-#     prompt: What is your name?
+vars:
+  generate_html_report:
+    type: boolean
+    description: Generate HTML coverage report
+    default: true
+    prompt: Do you want to generate HTML coverage report?
