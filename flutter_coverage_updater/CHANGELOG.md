@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [flutter_coverage_updater-v1.1.0] - 2025-07-16
+## [flutter_coverage_updater-v1.0.2] - 2025-07-16
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.0.2 in brick.yaml
+- *(release)* Update CHANGELOG.md for v1.0.2
+
+## [flutter_coverage_updater-v1.0.1] - 2025-07-16
 
 ### 🚀 Features
 
