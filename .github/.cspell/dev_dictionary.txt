@@ -10,3 +10,4 @@ juego # "Game" in Spanish.
 mostrado # "Shown" in Spanish.
 página # "Page" in Spanish.
 texto # "Text" in Spanish.
+winget # Windows package manager
