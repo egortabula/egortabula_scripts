@@ -7,9 +7,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/mason_publish.yml@v1
-    with:
-      working_directory: "flutter_coverage_updater"
-    secrets:
-      mason_credentials: secrets.MASON_CREDENTIALS
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    defaults:
+      run:
+        working-directory: flutter_coverage_updater
+    
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🎯 Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: 🧱 Install Mason
+        run: dart pub global activate mason_cli
+
+      - name: 🔐 Setup Mason Credentials
+        run: |
+          mkdir -p ~/.config/mason
+          echo '${{ secrets.MASON_CREDENTIALS }}' > ~/.config/mason/mason-credentials.json
+
+      - name: 🌵 Dry Run
+        run: mason publish --dry-run
+
+      - name: 📢 Publish
+        run: mason publish -f
