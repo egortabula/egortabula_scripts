@@ -3,7 +3,7 @@ description: A Flutter coverage updater that generates coverage reports, HTML fi
 
 # The following defines the brick repository url.
 # Uncomment and update the following line before publishing the brick.
-repository: https://github.com/my_org/my_repo
+repository: https://github.com/egortabula/egortabula_scripts/tree/main/flutter_coverage_updater
 
 # The following defines the version and build number for your brick.
 # A version number is three numbers separated by dots, like 1.2.34
