@@ -8,7 +8,7 @@ on:
 
 jobs:
   publish:
-    uses: egortabula/egortabula_workflows/.github/workflows/mason_publish.yml@v1
+    uses: egortabula/egortabula_workflows/.github/workflows/mason_publish.yml@main
     with:
       working_directory: "flutter_coverage_updater"
     secrets:
