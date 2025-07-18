@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [flutter_coverage_updater-v1.2.0](https://github.com/egortabula/egortabula_scripts/compare/flutter_coverage_updater-v1.1.0..flutter_coverage_updater-v1.2.0) - 2025-07-18
+
+### ⛰️  Features
+
+- *(flutter_coverage_updater)* Enhance description with 'powerful' keyword - ([f23e40e](https://github.com/egortabula/egortabula_scripts/commit/f23e40e3fe0c6499961df2e4d365ef4428ff0cdd))
+
 ## [flutter_coverage_updater-v1.0.7](https://github.com/egortabula/egortabula_scripts/compare/flutter_coverage_updater-v1.0.6..flutter_coverage_updater-v1.0.7) - 2025-07-18
 
 ### 🐛 Bug Fixes
