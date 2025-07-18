@@ -1,3 +1,5 @@
 bricks:
   flutter_coverage_updater:
     path: flutter_coverage_updater
+  bump_release:
+    path: bump_release

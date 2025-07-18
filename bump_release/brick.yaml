@@ -1,0 +1,45 @@
+name: bump_release
+description: Automated version bumping and release creation using git-cliff for semantic versioning
+
+# The following defines the brick repository url.
+# Uncomment and update the following line before publishing the brick.
+# repository: https://github.com/egortabula/egortabula_scripts
+
+# The following defines the version and build number for your brick.
+# A version number is three numbers separated by dots, like 1.2.34
+# followed by an optional build number (separated by a +).
+version: 1.0.0
+
+# The following defines the environment for the current brick.
+# It includes the version of mason that the brick requires.
+environment:
+  mason: ^0.1.1
+
+# Variables specify dynamic values that your brick depends on.
+# Zero or more variables can be specified for a given brick.
+# Each variable has:
+#  * a type (string, number, boolean, enum, array, or list)
+#  * an optional short description
+#  * an optional default value
+#  * an optional list of default values (array only)
+#  * an optional prompt phrase used when asking for the variable
+#  * a list of values (enums only)
+#  * an optional separator (list only)
+vars:
+  script_name:
+    type: string
+    description: Name for the release script
+    default: "create-release"
+    prompt: Script filename (without .sh extension)
+
+  default_branch:
+    type: string
+    description: Default branch name to check
+    default: "main"
+    prompt: Default branch name
+
+  farewell_message:
+    type: string
+    description: Custom farewell message for the script
+    default: "Thank you for using Bump Release script!"
+    prompt: Farewell message
