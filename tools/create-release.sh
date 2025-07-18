@@ -6,6 +6,33 @@
 
 set -e
 
+# Проверяем наличие git-cliff
+if ! command -v git-cliff &> /dev/null; then
+    echo "❌ Error: git-cliff is not installed"
+    echo ""
+    echo "📋 git-cliff is required for automatic version bumping and changelog generation."
+    echo "🔗 Install it from: https://github.com/orhun/git-cliff"
+    echo ""
+    echo "Installation options:"
+    echo "  • Cargo: cargo install git-cliff"
+    echo "  • Homebrew: brew install git-cliff"
+    echo "  • Download binary: https://github.com/orhun/git-cliff/releases"
+    echo ""
+    exit 1
+fi
+
+# Определяем корневую директорию проекта (где находится cliff.toml)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+CLIFF_CONFIG="$PROJECT_ROOT/cliff.toml"
+
+# Проверяем что cliff.toml существует
+if [ ! -f "$CLIFF_CONFIG" ]; then
+    echo "❌ Error: cliff.toml not found at $CLIFF_CONFIG"
+    echo "Please make sure you are in the correct project directory"
+    exit 1
+fi
+
 # Список доступных bricks (легко добавлять новые)
 AVAILABLE_BRICKS=(
     "flutter_coverage_updater"
@@ -18,6 +45,9 @@ FAREWELL_MESSAGE="
 � Created with ❤️ by @egortabula
 ⭐ If this script helped you, consider giving it a star on GitHub!
 🔗 GitHub: https://github.com/egortabula/egortabula_scripts"
+
+# Переходим в корневую директорию проекта для выполнения git команд
+cd "$PROJECT_ROOT"
 
 echo "🚀 Mason Brick Release Script"
 echo "=============================="
@@ -74,18 +104,26 @@ echo "🔍 Analyzing changes since last release..."
 # Создаем временный файл для git-cliff output
 TEMP_OUTPUT=$(mktemp)
 
-if git-cliff --config cliff.toml --bumped-version --include-path "$BRICK_NAME/**" > "$TEMP_OUTPUT" 2>&1; then
+if git-cliff --config "$CLIFF_CONFIG" --bumped-version --include-path "$BRICK_NAME/**" > "$TEMP_OUTPUT" 2>&1; then
     NEXT_VERSION=$(cat "$TEMP_OUTPUT")
+    
+    # Проверяем есть ли предупреждение о том, что нечего бампать
+    if grep -q "There is nothing to bump" "$TEMP_OUTPUT"; then
+        echo "❌ No changes requiring version bump found for $BRICK_NAME"
+        echo "Current version $CURRENT_VERSION is already up to date"
+        rm "$TEMP_OUTPUT"
+        exit 1
+    fi
+    
     rm "$TEMP_OUTPUT"
     
     # Убираем возможные префиксы
     NEXT_VERSION=$(echo "$NEXT_VERSION" | sed 's/^v//' | tr -d '\n\r' | xargs)
     
-    # Проверяем что версия не пустая и отличается от текущей
+    # Дополнительная проверка что версия отличается от текущей
     if [ -z "$NEXT_VERSION" ] || [ "$NEXT_VERSION" = "$CURRENT_VERSION" ]; then
         echo "❌ No changes requiring version bump found for $BRICK_NAME"
         echo "Current version $CURRENT_VERSION is already up to date"
-        rm -f "$TEMP_OUTPUT"
         exit 1
     fi
 else
