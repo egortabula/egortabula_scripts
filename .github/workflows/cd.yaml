@@ -86,7 +86,7 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           set +e
           git add ${{ needs.changelog.outputs.brick_name }}/brick.yaml
-          git commit -m "bump(${{ needs.changelog.outputs.brick_name }}): version to v${{ needs.changelog.outputs.version }} [skip ci]"
+          git commit -m "chore(${{ needs.changelog.outputs.brick_name }}): bump version to v${{ needs.changelog.outputs.version }} [skip ci]"
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git main
 
   # Небольшая задержка для синхронизации изменений
