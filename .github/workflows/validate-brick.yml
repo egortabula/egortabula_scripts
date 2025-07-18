@@ -1,0 +1,67 @@
+name: Validate Brick
+
+on:
+  workflow_call:
+    inputs:
+      brick_name:
+        description: "Name of the brick to validate"
+        required: true
+        type: string
+      brick_config:
+        description: "JSON configuration for brick generation"
+        required: true
+        type: string
+      expected_files:
+        description: "Space-separated list of files that should be generated"
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: 📦 Install Mason CLI
+        run: dart pub global activate mason_cli
+
+      - name: 🔍 Validate brick structure
+        run: |
+          cd ${{ inputs.brick_name }}
+          mason bundle . -t dart -o ../temp_${{ inputs.brick_name }}
+          echo "✅ Brick ${{ inputs.brick_name }} structure is valid"
+
+      - name: 🧪 Test brick generation
+        run: |
+          mkdir test_project
+          cd test_project
+
+          # Добавляем brick в Mason
+          mason add ${{ inputs.brick_name }} --path ../${{ inputs.brick_name }}
+
+          # Создаем файл с конфигурацией
+          echo '${{ inputs.brick_config }}' > vars.json
+
+          # Генерируем brick
+          mason make ${{ inputs.brick_name }} --config-path vars.json -o .
+
+          # Проверяем ожидаемые файлы
+          expected="${{ inputs.expected_files }}"
+          for file in $expected; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Expected file $file not found"
+              exit 1
+            fi
+            echo "✅ Found expected file: $file"
+          done
+
+          echo "✅ Brick ${{ inputs.brick_name }} generates correctly"
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          rm -rf test_project
+          rm -rf temp_${{ inputs.brick_name }}

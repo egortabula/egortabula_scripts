@@ -22,57 +22,10 @@ jobs:
           config: .github/cspell.json
           exclude: ".gitignore **.gen.dart **.g.dart coverage/**"
 
-  # Валидация всех brick'ов
-  validate_bricks:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - brick: flutter_coverage_updater
-            vars: |
-              project_name: test_coverage_project
-              generate_html_report: true
-            expected_files: "update_coverage.sh"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-      - name: Install Mason CLI
-        run: dart pub global activate mason_cli
-
-      - name: Validate brick structure
-        run: |
-          cd ${{ matrix.brick }}
-          mason bundle . -t dart -o ../temp_${{ matrix.brick }}
-          echo "✅ Brick ${{ matrix.brick }} structure is valid"
-
-      - name: Test brick generation with specific config
-        run: |
-          mkdir test_project
-          cd test_project
-
-          # Добавляем brick в Mason из локального пути
-          mason add ${{ matrix.brick }} --path ../${{ matrix.brick }}
-
-          # Создаем файл с переменными для brick'а
-          cat > vars.json << EOF
-          {
-            ${{ matrix.vars }}
-          }
-          EOF
-
-          # Генерируем brick с конкретными параметрами
-          mason make ${{ matrix.brick }} --config-path vars.json -o .
-
-          # Проверяем ожидаемые файлы
-          expected="${{ matrix.expected_files }}"
-          for file in $expected; do
-            if [ ! -f "$file" ]; then
-              echo "❌ Expected file $file not found"
-              exit 1
-            fi
-            echo "✅ Found expected file: $file"
-          done
-
-          echo "✅ Brick ${{ matrix.brick }} generates correctly with config"
+  # 🧱 Валидация brick'ов
+  validate_flutter_coverage_updater:
+    uses: ./.github/workflows/validate-brick.yml
+    with:
+      brick_name: "flutter_coverage_updater"
+      brick_config: '{"project_name": "test_coverage_project", "generate_html_report": true}'
+      expected_files: "update_coverage.sh"
