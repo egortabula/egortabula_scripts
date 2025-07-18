@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [flutter_coverage_updater-v1.2.1](https://github.com/egortabula/egortabula_scripts/compare/flutter_coverage_updater-v1.2.0..flutter_coverage_updater-v1.2.1) - 2025-07-18
+
+### 🐛 Bug Fixes
+
+- *(flutter_coverage_updater)* Shorten description to comply with BrickHub 120 char limit - ([b2f6203](https://github.com/egortabula/egortabula_scripts/commit/b2f6203e73258f9bb505214db541e3764389a33c))
+
 ## [flutter_coverage_updater-v1.2.0](https://github.com/egortabula/egortabula_scripts/compare/flutter_coverage_updater-v1.1.0..flutter_coverage_updater-v1.2.0) - 2025-07-18
 
 ### ⛰️  Features
