@@ -11,3 +11,15 @@ mostrado # "Shown" in Spanish.
 página # "Page" in Spanish.
 texto # "Text" in Spanish.
 winget # Windows package manager
+# egortabula_scripts specific terms:
+egortabula # Username
+brickhub # Mason brick registry
+lcov # Coverage tool
+genhtml # HTML report generator
+mkdir # Unix command
+chmod # Unix command
+println # Programming function
+stdout # Standard output
+stderr # Standard error
+shellcheck # Shell script linter
+markdownlint # Markdown linter

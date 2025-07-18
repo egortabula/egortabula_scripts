@@ -26,3 +26,21 @@ verygood # Very Good, but without a space.
 xcode # Apple's integrated development environment.
 xcworkspace # Abbreviation for Xcode workspace.
 xcassets # Abbreviation for Xcode assets.
+# egortabula_scripts workflow terms:
+workflow # CI/CD workflow
+workflows # Plural of workflow
+yaml # YAML file format
+yml # YAML file extension
+cicd # Continuous Integration/Continuous Deployment
+gitignore # Git ignore file
+changelog # Change log
+readme # README file
+templating # Template processing
+updater # Something that updates
+mustache # Template syntax
+homebrew # macOS package manager
+getopt # Command line option parser
+ostype # Operating system type variable
+darwin # macOS system name
+endif # Shell script conditional end
+elif # Shell script conditional else-if
