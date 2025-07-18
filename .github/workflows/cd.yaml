@@ -37,10 +37,9 @@ jobs:
         id: git-cliff
         with:
           config: cliff.toml
-          args: --verbose --latest --include-path ${{ steps.extract.outputs.brick_name }}/**
+          args: --verbose --latest --strip header --prepend ${{ steps.extract.outputs.brick_name }}/CHANGELOG.md --include-path ${{ steps.extract.outputs.brick_name }}/**
           github_token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          OUTPUT: ${{ steps.extract.outputs.brick_name }}/CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
 
       - name: 💾 Commit and push changelog
