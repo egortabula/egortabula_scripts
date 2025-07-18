@@ -13,6 +13,7 @@ jobs:
       contents: write
     outputs:
       brick_name: ${{ steps.extract.outputs.brick_name }}
+      version: ${{ steps.extract.outputs.version }}
       release_body: ${{ steps.git-cliff.outputs.content }}
     steps:
       - name: 📦 Checkout
@@ -36,7 +37,8 @@ jobs:
         id: git-cliff
         with:
           config: cliff.toml
-          args: --verbose --latest --strip header --prepend ${{ steps.extract.outputs.brick_name }}/CHANGELOG.md --include-path ${{ steps.extract.outputs.brick_name }}/**
+          args: --verbose --latest --include-path ${{ steps.extract.outputs.brick_name }}/**
+          github_token: ${{ secrets.GITHUB_TOKEN }}
         env:
           OUTPUT: ${{ steps.extract.outputs.brick_name }}/CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
@@ -51,18 +53,32 @@ jobs:
           git commit -m "docs(${{ steps.extract.outputs.brick_name }}): update changelog for v${{ steps.extract.outputs.version }} [skip ci]"
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git main
 
-      - name: 🔄 Update brick.yaml version
+  # Обновление версии в brick.yaml
+  update_version:
+    name: 🔄 Update brick version
+    runs-on: ubuntu-latest
+    needs: changelog
+    permissions:
+      contents: write
+    steps:
+      - name: � Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: �🔄 Update brick.yaml version
         run: |
-          cd ${{ steps.extract.outputs.brick_name }}
+          cd ${{ needs.changelog.outputs.brick_name }}
 
           # Обновляем версию в brick.yaml
           if [ -f "brick.yaml" ]; then
             # Используем sed для замены версии
-            sed -i.bak "s/^version: .*/version: ${{ steps.extract.outputs.version }}/" brick.yaml
+            sed -i.bak "s/^version: .*/version: ${{ needs.changelog.outputs.version }}/" brick.yaml
             rm brick.yaml.bak
-            echo "✅ Updated version in brick.yaml to ${{ steps.extract.outputs.version }}"
+            echo "✅ Updated version in brick.yaml to ${{ needs.changelog.outputs.version }}"
           else
-            echo "⚠️ brick.yaml not found in ${{ steps.extract.outputs.brick_name }}"
+            echo "⚠️ brick.yaml not found in ${{ needs.changelog.outputs.brick_name }}"
           fi
 
       - name: 💾 Commit and push version update
@@ -70,14 +86,23 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           set +e
-          git add ${{ steps.extract.outputs.brick_name }}/brick.yaml
-          git commit -m "bump(${{ steps.extract.outputs.brick_name }}): version to v${{ steps.extract.outputs.version }} [skip ci]"
+          git add ${{ needs.changelog.outputs.brick_name }}/brick.yaml
+          git commit -m "bump(${{ needs.changelog.outputs.brick_name }}): version to v${{ needs.changelog.outputs.version }} [skip ci]"
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git main
+
+  # Небольшая задержка для синхронизации изменений
+  sync:
+    name: ⏳ Sync changes
+    runs-on: ubuntu-latest
+    needs: [changelog, update_version]
+    steps:
+      - name: ⏳ Wait for changes to propagate
+        run: sleep 10
 
   publish:
     name: 🚀 Publish brick
     uses: egortabula/egortabula_workflows/.github/workflows/mason_publish.yml@v1
-    needs: changelog
+    needs: [changelog, update_version, sync]
     with:
       working_directory: ${{ needs.changelog.outputs.brick_name }}
     secrets:
@@ -86,7 +111,7 @@ jobs:
   release:
     name: 🎉 Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [changelog, publish]
+    needs: [changelog, update_version, sync, publish]
     permissions:
       contents: write
     steps:
