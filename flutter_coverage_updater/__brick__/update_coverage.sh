@@ -153,3 +153,8 @@ echo "📂 HTML report: skipped (disabled)"
 {{/generate_html_report}}
 echo "🏷️ Badge created/updated: coverage_badge.svg"
 echo "📊 Overall coverage: $COVERAGE"
+echo ""
+echo "🙏 Thank you for using Flutter Coverage Updater!"
+echo "💻 Created with ❤️ by @egortabula"
+echo "⭐ If this script helped you, consider giving it a star on GitHub!"
+echo "🔗 GitHub: https://github.com/egortabula/egortabula_scripts"
