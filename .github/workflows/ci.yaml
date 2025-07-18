@@ -33,5 +33,5 @@ jobs:
     uses: ./.github/workflows/validate-brick.yml
     with:
       brick_name: "bump_release"
-      brick_config: '{"script_name": "create-release", "default_branch": main}'
+      brick_config: '{"script_name": "create-release", "default_branch": "main"}'
       expected_files: "create-release.sh"
