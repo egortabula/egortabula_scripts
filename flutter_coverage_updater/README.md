@@ -62,6 +62,6 @@ mason make flutter_coverage_updater --generate_html_report false
 
 ## Variables
 
-| Variable | Description | Default | Type |
-|----------|-------------|---------|------|
-| `generate_html_report` | Generate HTML coverage report | `true` | `boolean` |
+| Variable               | Description                   | Default | Type      |
+| ---------------------- | ----------------------------- | ------- | --------- |
+| `generate_html_report` | Generate HTML coverage report | `true`  | `boolean` |
