@@ -65,6 +65,3 @@ mason make flutter_coverage_updater --generate_html_report false
 | Variable | Description | Default | Type |
 |----------|-------------|---------|------|
 | `generate_html_report` | Generate HTML coverage report | `true` | `boolean` |
-
-[1]: https://github.com/felangel/mason
-[2]: https://docs.brickhub.dev
