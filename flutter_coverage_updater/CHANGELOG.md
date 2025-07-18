@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [flutter_coverage_updater-v1.0.7](https://github.com/egortabula/egortabula_scripts/compare/flutter_coverage_updater-v1.0.6..flutter_coverage_updater-v1.0.7) - 2025-07-18
+
+### 🐛 Bug Fixes
+
+- Remove unnecessary comments from brick.yaml - ([d077bc6](https://github.com/egortabula/egortabula_scripts/commit/d077bc69aedc4c4c6ca63e43329b8442136cf7fd))
+
 ## [flutter_coverage_updater-v1.0.4](https://github.com/egortabula/egortabula_scripts/compare/flutter_coverage_updater-v1.0.3..flutter_coverage_updater-v1.0.4) - 2025-07-18
 
 ### ⚙️ Miscellaneous Tasks
