@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🧪 Running tests with coverage..."
+echo "🧪 Running Flutter tests with coverage..."
 # Check if test directory exists
 if [ ! -d "test" ]; then
     echo "⚠️  No test directory found. Creating minimal coverage report..."
