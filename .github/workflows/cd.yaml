@@ -104,6 +104,7 @@ jobs:
     needs: [changelog, update_version, sync]
     with:
       working_directory: ${{ needs.changelog.outputs.brick_name }}
+      checkout_ref: main
     secrets:
       mason_credentials: ${{ secrets.MASON_CREDENTIALS }}
 
