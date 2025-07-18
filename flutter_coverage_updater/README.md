@@ -68,8 +68,3 @@ mason make flutter_coverage_updater --generate_html_report false
 
 [1]: https://github.com/felangel/mason
 [2]: https://docs.brickhub.dev
-[3]: https://verygood.ventures/blog/code-generation-with-mason
-[4]: https://youtu.be/G4PTjA6tpTU
-[5]: https://youtu.be/qjA0JFiPMnQ
-[6]: https://youtu.be/o8B1EfcUisw
-[7]: https://youtu.be/LXhgiF5HiQg
