@@ -29,3 +29,9 @@ jobs:
       brick_name: "flutter_coverage_updater"
       brick_config: '{"project_name": "test_coverage_project", "generate_html_report": true}'
       expected_files: "update_coverage.sh"
+  validate_bump_release:
+    uses: ./.github/workflows/validate-brick.yml
+    with:
+      brick_name: "bump_release"
+      brick_config: '{"script_name": "create-release", "default_branch": main}'
+      expected_files: "create-release.sh"
