@@ -47,6 +47,18 @@ jobs:
           VERSION=$(grep "^version:" brick.yaml | cut -d' ' -f2)
           echo "📦 Found version: $VERSION in brick.yaml"
 
+          # Проверяем длину описания (макс 120 символов для BrickHub)
+          if grep -q "^description:" brick.yaml; then
+            DESCRIPTION=$(grep "^description:" brick.yaml | cut -d: -f2- | sed 's/^ *//')
+            DESC_LENGTH=$(echo "$DESCRIPTION" | wc -c)
+            if [ $DESC_LENGTH -gt 120 ]; then
+              echo "❌ Description too long: $DESC_LENGTH characters (max 120)"
+              echo "Description: $DESCRIPTION"
+              exit 1
+            fi
+            echo "✅ Description length OK: $DESC_LENGTH/120 characters"
+          fi
+
           mason bundle . -t dart -o ../temp_${{ inputs.brick_name }}
           echo "✅ Brick ${{ inputs.brick_name }} structure is valid"
 

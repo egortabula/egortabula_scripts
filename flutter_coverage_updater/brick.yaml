@@ -1,5 +1,5 @@
 name: flutter_coverage_updater
-description: A powerful Flutter coverage updater that generates coverage reports, HTML files, and SVG badges with cross-platform support
+description: Flutter coverage updater that generates coverage reports, HTML files, and SVG badges
 
 # The following defines the brick repository url.
 # Uncomment and update the following line before publishing the brick.
