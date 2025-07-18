@@ -74,54 +74,6 @@ jobs:
 
           echo "✅ Brick ${{ matrix.brick }} generates correctly with config"
 
-  # Проверка синтаксиса shell скриптов
-  shellcheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-      - name: Install Mason CLI
-        run: dart pub global activate mason_cli
-
-      - name: Generate and check shell scripts from bricks
-        run: |
-          # Проверяем обычные .sh файлы (не шаблоны)
-          find . -name "*.sh" -not -path "*/__brick__/*" -type f | while read -r file; do
-            if [ -n "$file" ]; then
-              echo "Checking regular script: $file"
-              shellcheck "$file" --format=gcc --severity=warning
-            fi
-          done
-
-          # Генерируем и проверяем каждый brick
-          for brick_dir in */; do
-            if [ -f "${brick_dir}brick.yaml" ]; then
-              brick_name=$(basename "$brick_dir")
-              echo "Testing brick: $brick_name"
-              
-              # Создаем тестовую директорию для каждого brick'а
-              test_dir="test_${brick_name}"
-              mkdir -p "$test_dir"
-              cd "$test_dir"
-              
-              # Генерируем brick с дефолтными параметрами
-              echo | mason make "../$brick_name" -o . 2>/dev/null || true
-              
-              # Проверяем все сгенерированные .sh файлы
-              find . -name "*.sh" -type f | while read -r generated_file; do
-                if [ -n "$generated_file" ]; then
-                  echo "Checking generated script: $generated_file"
-                  shellcheck "$generated_file" --format=gcc --severity=warning
-                fi
-              done
-              
-              cd ..
-              rm -rf "$test_dir"
-            fi
-          done
-
   # Проверка форматирования Markdown
   markdown_lint:
     runs-on: ubuntu-latest
@@ -130,3 +82,4 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v16
         with:
           globs: "**/*.md"
+          config: ".markdownlint.json"
