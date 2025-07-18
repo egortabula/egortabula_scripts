@@ -44,7 +44,7 @@ jobs:
       - name: Validate brick structure
         run: |
           cd ${{ matrix.brick }}
-          mason bundle -t dart -o ../temp_${{ matrix.brick }}
+          mason bundle . -t dart -o ../temp_${{ matrix.brick }}
           echo "✅ Brick ${{ matrix.brick }} structure is valid"
 
       - name: Test brick generation with specific config
