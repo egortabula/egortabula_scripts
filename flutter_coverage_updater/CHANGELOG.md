@@ -1,9 +1,3 @@
-## [unreleased]
-
-### 📚 Documentation
-
-- Restore CHANGELOG.md - ([27f8986](https://github.com/egortabula/egortabula_scripts/commit/27f8986767b59aafb3fda6f621074a73cd05b0e3))
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
