@@ -52,6 +52,9 @@ jobs:
           mkdir test_project
           cd test_project
 
+          # Добавляем brick в Mason из локального пути
+          mason add ${{ matrix.brick }} --path ../${{ matrix.brick }}
+
           # Создаем файл с переменными для brick'а
           cat > vars.json << EOF
           {
@@ -60,7 +63,7 @@ jobs:
           EOF
 
           # Генерируем brick с конкретными параметрами
-          mason make ../${{ matrix.brick }} --config-path vars.json -o .
+          mason make ${{ matrix.brick }} --config-path vars.json -o .
 
           # Проверяем ожидаемые файлы
           expected="${{ matrix.expected_files }}"
