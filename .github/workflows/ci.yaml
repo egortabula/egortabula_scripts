@@ -1,0 +1,96 @@
+name: ci
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Проверка spell checking
+  spell_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: zwaldowski/cspell-action@v1
+        with:
+          paths: "**/*.{md,dart,yaml,yml}"
+          config: .github/cspell.json
+          exclude: ".gitignore **.gen.dart **.g.dart coverage/**"
+
+  # Валидация всех brick'ов
+  validate_bricks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - brick: flutter_coverage_updater
+            vars: |
+              project_name: test_coverage_project
+              generate_html_report: true
+            expected_files: "update_coverage.sh"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install Mason CLI
+        run: dart pub global activate mason_cli
+      
+      - name: Validate brick structure
+        run: |
+          cd ${{ matrix.brick }}
+          mason bundle -t dart -o ../temp_${{ matrix.brick }}
+          echo "✅ Brick ${{ matrix.brick }} structure is valid"
+      
+      - name: Test brick generation with specific config
+        run: |
+          mkdir test_project
+          cd test_project
+          
+          # Создаем файл с переменными для brick'а
+          cat > vars.json << EOF
+          {
+            ${{ matrix.vars }}
+          }
+          EOF
+          
+          # Генерируем brick с конкретными параметрами
+          mason make ../${{ matrix.brick }} --config-path vars.json -o .
+          
+          # Проверяем ожидаемые файлы
+          expected="${{ matrix.expected_files }}"
+          for file in $expected; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Expected file $file not found"
+              exit 1
+            fi
+            echo "✅ Found expected file: $file"
+          done
+          
+          echo "✅ Brick ${{ matrix.brick }} generates correctly with config"
+
+  # Проверка синтаксиса shell скриптов
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: '.'
+          format: gcc
+          severity: warning
+
+  # Проверка форматирования Markdown
+  markdown_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: '**/*.md'
