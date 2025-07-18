@@ -31,6 +31,22 @@ jobs:
       - name: 🔍 Validate brick structure
         run: |
           cd ${{ inputs.brick_name }}
+
+          # Проверяем наличие brick.yaml
+          if [ ! -f "brick.yaml" ]; then
+            echo "❌ brick.yaml not found"
+            exit 1
+          fi
+
+          # Проверяем наличие версии в brick.yaml
+          if ! grep -q "^version:" brick.yaml; then
+            echo "❌ Version not found in brick.yaml"
+            exit 1
+          fi
+
+          VERSION=$(grep "^version:" brick.yaml | cut -d' ' -f2)
+          echo "📦 Found version: $VERSION in brick.yaml"
+
           mason bundle . -t dart -o ../temp_${{ inputs.brick_name }}
           echo "✅ Brick ${{ inputs.brick_name }} structure is valid"
 
