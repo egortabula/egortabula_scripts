@@ -40,28 +40,28 @@ jobs:
           sdk: stable
       - name: Install Mason CLI
         run: dart pub global activate mason_cli
-      
+
       - name: Validate brick structure
         run: |
           cd ${{ matrix.brick }}
           mason bundle -t dart -o ../temp_${{ matrix.brick }}
           echo "✅ Brick ${{ matrix.brick }} structure is valid"
-      
+
       - name: Test brick generation with specific config
         run: |
           mkdir test_project
           cd test_project
-          
+
           # Создаем файл с переменными для brick'а
           cat > vars.json << EOF
           {
             ${{ matrix.vars }}
           }
           EOF
-          
+
           # Генерируем brick с конкретными параметрами
           mason make ../${{ matrix.brick }} --config-path vars.json -o .
-          
+
           # Проверяем ожидаемые файлы
           expected="${{ matrix.expected_files }}"
           for file in $expected; do
@@ -71,7 +71,7 @@ jobs:
             fi
             echo "✅ Found expected file: $file"
           done
-          
+
           echo "✅ Brick ${{ matrix.brick }} generates correctly with config"
 
   # Проверка синтаксиса shell скриптов
@@ -79,12 +79,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+      - uses: dart-lang/setup-dart@v1
         with:
-          scandir: '.'
-          format: gcc
-          severity: warning
+          sdk: stable
+      - name: Install Mason CLI
+        run: dart pub global activate mason_cli
+
+      - name: Generate and check shell scripts from bricks
+        run: |
+          # Проверяем обычные .sh файлы (не шаблоны)
+          find . -name "*.sh" -not -path "*/__brick__/*" -type f | while read -r file; do
+            if [ -n "$file" ]; then
+              echo "Checking regular script: $file"
+              shellcheck "$file" --format=gcc --severity=warning
+            fi
+          done
+
+          # Генерируем и проверяем каждый brick
+          for brick_dir in */; do
+            if [ -f "${brick_dir}brick.yaml" ]; then
+              brick_name=$(basename "$brick_dir")
+              echo "Testing brick: $brick_name"
+              
+              # Создаем тестовую директорию для каждого brick'а
+              test_dir="test_${brick_name}"
+              mkdir -p "$test_dir"
+              cd "$test_dir"
+              
+              # Генерируем brick с дефолтными параметрами
+              echo | mason make "../$brick_name" -o . 2>/dev/null || true
+              
+              # Проверяем все сгенерированные .sh файлы
+              find . -name "*.sh" -type f | while read -r generated_file; do
+                if [ -n "$generated_file" ]; then
+                  echo "Checking generated script: $generated_file"
+                  shellcheck "$generated_file" --format=gcc --severity=warning
+                fi
+              done
+              
+              cd ..
+              rm -rf "$test_dir"
+            fi
+          done
 
   # Проверка форматирования Markdown
   markdown_lint:
@@ -93,4 +129,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: DavidAnson/markdownlint-cli2-action@v16
         with:
-          globs: '**/*.md'
+          globs: "**/*.md"
