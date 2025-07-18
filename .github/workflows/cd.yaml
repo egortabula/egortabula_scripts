@@ -37,7 +37,7 @@ jobs:
         id: git-cliff
         with:
           config: cliff.toml
-          args: --verbose --unreleased --tag ${{ steps.extract.outputs.tag_name }}--prepend ${{ steps.extract.outputs.brick_name }}/CHANGELOG.md --include-path ${{ steps.extract.outputs.brick_name }}/**
+          args: --verbose --unreleased --tag ${{ steps.extract.outputs.tag_name }} --prepend ${{ steps.extract.outputs.brick_name }}/CHANGELOG.md --include-path ${{ steps.extract.outputs.brick_name }}/**
           github_token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_REPO: ${{ github.repository }}
